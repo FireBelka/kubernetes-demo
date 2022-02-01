@@ -54,7 +54,7 @@ metadata:
     name: docker-credentials
 type: kubernetes.io/dockerconfigjson
 data:
-    .dockerconfigjson: eyJhdXRocyI6eyJ0ZXN0cmVnazhzLmF6dXJlY3IuaW8iOnsidXNlcm5hbWUiOiJ0ZXN0UmVnSzhzIiwicGFzc3dvcmQiOiJHU21QaVZPR1VUL0QwMU9aQ0dZZHk0Zm49V09TWnNZUiIsImVtYWlsIjoiZGFuaWxhYmVsa29AZ21haWwuY29tIiwiYXV0aCI6ImRHVnpkRkpsWjBzNGN6cEhVMjFRYVZaUFIxVlVMMFF3TVU5YVEwZFpaSGswWm00OVYwOVRXbk5aVWc9PSJ9fX0=
+    .dockerconfigjson: ...
 ---
 apiVersion: apps/v1
 kind: Deployment

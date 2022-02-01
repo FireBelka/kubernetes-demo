@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-db-configmap
-data:
-  database_url: mysql-db-service
-  backup-url: /backup/backup.sql
