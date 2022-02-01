@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "demoaks-7498"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "demoaks-7498"
+  template:
+    metadata:
+      labels:
+        app: "demoaks-7498"
+    spec:
+      containers:
+        - name: "demoaks-7498"
+          image: "testregk8s.azurecr.io/demoaks"
+          ports:
+          - containerPort: 3306
