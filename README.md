@@ -1,5 +1,5 @@
 #K8s for minikube
-Version for minikube(access through nodeport: <local-node-ip>:30022)		
+Version for minikube(access through nodeport: local-node-ip:30022)		
 ##resources
 - MySQL database with clusterIP service, Initialization from /backup/*.sql(custom image)
 - PhpMyAdmin with Nodeport service(custom image)
