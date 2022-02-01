@@ -41,12 +41,12 @@ metadata:
     name: mysql-secret
 type: Opaque
 data:
-    username: dXNlcm5hbWU= #echo -n 'word' | base64
-    username-pwt: cGFzc3dvcmQ=
-    root-pwt: QmVsa2E=
-    root: cm9vdA==
-    az-username: dGVzdFJlZ0s4cw==
-    az-pwt: R1NtUGlWT0dVVC9EMDFPWkNHWWR5NGZuPVdPU1pzWVI=
+    username: ... #echo -n 'word' | base64
+    username-pwt: ...
+    root-pwt: ...
+    root: ...
+    az-username: ...
+    az-pwt: ...
 ---
 apiVersion: v1
 kind: Secret
