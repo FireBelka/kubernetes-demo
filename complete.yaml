@@ -1,0 +1,175 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-db-configmap
+data:
+  database_url: mysql-db-service
+  backup-url: /backup/backup.sql
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0001
+  labels:
+    app: test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /home/firebelka/projects/K8s-test/mongo-dep/mongo-db-backup
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-disk
+  labels:
+    app: test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: mysql-secret
+type: Opaque
+data:
+    username: dXNlcm5hbWU= #echo -n 'word' | base64
+    username-pwt: cGFzc3dvcmQ=
+    root-pwt: QmVsa2E=
+    root: cm9vdA==
+    az-username: dGVzdFJlZ0s4cw==
+    az-pwt: R1NtUGlWT0dVVC9EMDFPWkNHWWR5NGZuPVdPU1pzWVI=
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: docker-credentials
+type: kubernetes.io/dockerconfigjson
+data:
+    .dockerconfigjson: eyJhdXRocyI6eyJ0ZXN0cmVnazhzLmF6dXJlY3IuaW8iOnsidXNlcm5hbWUiOiJ0ZXN0UmVnSzhzIiwicGFzc3dvcmQiOiJHU21QaVZPR1VUL0QwMU9aQ0dZZHk0Zm49V09TWnNZUiIsImVtYWlsIjoiZGFuaWxhYmVsa29AZ21haWwuY29tIiwiYXV0aCI6ImRHVnpkRkpsWjBzNGN6cEhVMjFRYVZaUFIxVlVMMFF3TVU5YVEwZFpaSGswWm00OVYwOVRXbk5aVWc9PSJ9fX0=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db
+  labels:
+    app: mysql-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-db
+  template:
+    metadata:
+      labels:
+        app: mysql-db
+    spec:
+      containers:
+      - name: mysql
+        image: testregk8s.azurecr.io/mysql-server
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-pwt
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username-pwt
+        volumeMounts:
+        - mountPath: "/backup/"
+          name: volume
+      imagePullSecrets:
+      - name: docker-credentials
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: mysql-disk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-db-service
+spec:
+  selector:
+    app: mysql-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+  labels:
+    app: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      containers:
+      - name: phpmyadmin
+        image: testregk8s.azurecr.io/demo
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PMA_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root
+        - name: PMA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-pwt
+        - name: PMA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-db-configmap
+              key: database_url
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-pwt
+      imagePullSecrets:
+      - name: docker-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin-service
+spec:
+  selector:
+    app: phpmyadmin
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 80
+      nodePort: 30022

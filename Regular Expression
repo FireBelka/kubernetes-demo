@@ -1,0 +1,1 @@
+/^(?!.*((.*\..*)|(^mysql$)|(^performance_schema$))).*/gm
