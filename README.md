@@ -1,6 +1,6 @@
-#K8s for minikube
+# K8s for minikube
 Version for minikube(access through nodeport: local-node-ip:30022)		
-##resources
+## resources
 - MySQL database with clusterIP service, Initialization from /backup/*.sql(custom image)
 - PhpMyAdmin with Nodeport service(custom image)
 - Persistent volume & persistent volume claim mounted to /backup in MySQL container
