@@ -42,11 +42,9 @@ metadata:
 type: Opaque
 data:
     username: ... #echo -n 'word' | base64
-    username-pwt: ....
+    username-pwt: ...
     root-pwt: ...
     root: ...
-    az-username: ...
-    az-pwt: ...
 ---
 apiVersion: v1
 kind: Secret
@@ -54,7 +52,7 @@ metadata:
     name: docker-credentials
 type: kubernetes.io/dockerconfigjson
 data:
-    .dockerconfigjson: ....
+    .dockerconfigjson: ...
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -167,12 +165,13 @@ metadata:
 spec:
   selector:
     app: phpmyadmin
-  type: NodePort
+#  type: NodePort
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8081
       targetPort: 80
-      nodePort: 30022
+#      nodePort: 30022
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -226,9 +225,10 @@ metadata:
 spec:
   selector:
     app: phpmyadmin-2
-  type: NodePort
+  type: LoadBalancer
+#  type: NodePort
   ports:
     - protocol: TCP
       port: 8081
       targetPort: 80
-      nodePort: 30023
+#      nodePort: 30023

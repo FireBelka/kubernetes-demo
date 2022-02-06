@@ -3,17 +3,42 @@ kind: Deployment
 metadata:
   name: "demoaks-7498"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: "demoaks-7498"
+      app: "mysql-db"
   template:
     metadata:
       labels:
-        app: "demoaks-7498"
+        app: "mysql-db"
     spec:
-      containers:
-        - name: "demoaks-7498"
-          image: "testregk8s.azurecr.io/demoaks"
+       containers:
+        - name: "mysql-db"
+          image: "testregk8s.azurecr.io/mysql-server"
           ports:
           - containerPort: 3306
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: root-pwt
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: username-pwt
+          volumeMounts:
+          - mountPath: "/backup/"
+            name: volume
+        imagePullSecrets:
+        - name: docker-credentials
+        volumes:
+          - name: volume
+            persistentVolumeClaim:
+              claimName: mysql-disk

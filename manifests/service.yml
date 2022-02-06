@@ -1,15 +1,12 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
-    name: "demoaks-7498"
-    labels:
-        app: "demoaks-7498"
+  name: mysql-db-service
 spec:
-    type: LoadBalancer
-    ports:
-    - port: 3306
+  selector:
+    app: mysql-db
+  ports:
+    - protocol: TCP
+      port: 3306
       targetPort: 3306
-      protocol: TCP
-      name: http
-    selector:
-        app: "demoaks-7498"
