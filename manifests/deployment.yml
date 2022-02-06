@@ -12,7 +12,7 @@ spec:
       labels:
         app: "mysql-db"
     spec:
-       containers:
+      containers:
         - name: "mysql-db"
           image: "testregk8s.azurecr.io/mysql-server"
           ports:
@@ -36,9 +36,9 @@ spec:
           volumeMounts:
           - mountPath: "/backup/"
             name: volume
-        imagePullSecrets:
+      imagePullSecrets:
         - name: docker-credentials
-        volumes:
+      volumes:
           - name: volume
             persistentVolumeClaim:
               claimName: mysql-disk
