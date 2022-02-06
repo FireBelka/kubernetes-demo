@@ -1,0 +1,59 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin-satging
+  labels:
+    app: phpmyadmin-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin-2
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin-2
+    spec:
+      containers:
+      - name: phpmyadmin-satging
+        image: testregk8s.azurecr.io/demo
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PMA_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username
+        - name: PMA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username-pwt
+        - name: PMA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-db-configmap
+              key: database_url
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-pwt
+      imagePullSecrets:
+      - name: docker-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin-service-staging
+spec:
+  selector:
+    app: phpmyadmin-2
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 80
+      nodePort: 30023
