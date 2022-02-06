@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: "demoaks-7498"
+    labels:
+        app: "demoaks-7498"
+spec:
+    type: LoadBalancer
+    ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: http
+    selector:
+        app: "demoaks-7498"
