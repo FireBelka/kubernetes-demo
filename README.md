@@ -6,3 +6,4 @@ Version for minikube(access through nodeport: local-node-ip:30022)
 - Persistent volume & persistent volume claim mounted to /backup in MySQL container
 - Secret with base64 encoded credentials
 - Configmap with link to database
+
