@@ -1,44 +1,45 @@
-apiVersion : apps/v1
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "mysql-db"
+  name: phpmyadmin-satging
+  labels:
+    app: phpmyadmin-2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "mysql-db"
+      app: phpmyadmin-2
   template:
     metadata:
       labels:
-        app: "mysql-db"
+        app: phpmyadmin-2
     spec:
       containers:
-        - name: "mysql-db"
-          image: "testregk8s.azurecr.io/mysql-server"
-          ports:
-          - containerPort: 3306
-          env:
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: root-pwt
-          - name: MYSQL_USER
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: username
-          - name: MYSQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: username-pwt
-          volumeMounts:
-          - mountPath: "/backup/"
-            name: volume
+      - name: phpmyadmin-satging
+        image: testregk8s.azurecr.io/demo
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PMA_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username-2
+        - name: PMA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: username-2-pwt
+        - name: PMA_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-db-configmap
+              key: database_url
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-pwt
       imagePullSecrets:
-        - name: docker-credentials
-      volumes:
-          - name: volume
-            persistentVolumeClaim:
-              claimName: mysql-disk
+      - name: docker-credentials

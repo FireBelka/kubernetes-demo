@@ -14,8 +14,8 @@ jobs:
     - name: Build and push image to ACR
       id: build-image
       run: |
-        docker build "$GITHUB_WORKSPACE/server" -f  "server/Dockerfile" -t testregk8s.azurecr.io/mysql-server:${{ github.sha }} --label dockerfile-path=server/Dockerfile
-        docker push testregk8s.azurecr.io/mysql-server:${{ github.sha }}
+        docker build "$GITHUB_WORKSPACE/server" -f  "client/Dockerfile" -t testregk8s.azurecr.io/demo:${{ github.sha }} --label dockerfile-path=server/Dockerfile
+        docker push testregk8s.azurecr.io/demo:${{ github.sha }}
 
     - uses: azure/aks-set-context@v1
       with:
@@ -46,6 +46,6 @@ jobs:
           manifests/deployment.yml
 #          manifests/service.yml
         images: |
-          testregk8s.azurecr.io/mysql-server:${{ github.sha }}
+          testregk8s.azurecr.io/demo:${{ github.sha }}
         imagepullsecrets: |
           dockerauth
