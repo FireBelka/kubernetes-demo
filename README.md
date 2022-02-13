@@ -1,5 +1,5 @@
-# K8s for azure
-Version for azure
+# K8s for Azure
+Version for Azure
 ## resources
 - MySQL database with clusterIP service, Initialization from /backup/*.sql(custom image)
 - PhpMyAdmin with Nodeport service(custom image), when starts, upload some data to mysql server(downloaded from Azure storage acc)
