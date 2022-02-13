@@ -48,4 +48,3 @@ get_docker_secret PMA_HOST
 get_docker_secret PMA_CONTROLPASS
 
 exec "$@"
-

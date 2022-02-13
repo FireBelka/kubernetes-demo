@@ -150,4 +150,3 @@ if (isset($_ENV['MEMORY_LIMIT'])) {
 if (file_exists('/etc/phpmyadmin/config.user.inc.php')) {
     include('/etc/phpmyadmin/config.user.inc.php');
 }
-
