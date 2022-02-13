@@ -1,15 +1,17 @@
-FROM php:8.0-%%VARIANT%%
+FROM php:8.0-fpm-alpine
+
+# docker-entrypoint.sh dependencies
+RUN apk add --no-cache \
+    bash \
+    tzdata
 
 # Install dependencies
 RUN set -ex; \
     \
-    savedAptMark="$(apt-mark showmanual)"; \
-    \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-        libbz2-dev \
-        libfreetype6-dev \
-        libjpeg-dev \
+    apk add --no-cache --virtual .build-deps \
+        bzip2-dev \
+        freetype-dev \
+        libjpeg-turbo-dev \
         libpng-dev \
         libwebp-dev \
         libxpm-dev \
@@ -25,18 +27,14 @@ RUN set -ex; \
         zip \
     ; \
     \
-    apt-mark auto '.*' > /dev/null; \
-    apt-mark manual $savedAptMark; \
-    ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
-        | awk '/=>/ { print $3 }' \
-        | sort -u \
-        | xargs -r dpkg-query -S \
-        | cut -d: -f1 \
-        | sort -u \
-        | xargs -rt apt-mark manual; \
-    \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/*
+    runDeps="$( \
+        scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+            | tr ',' '\n' \
+            | sort -u \
+            | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+    )"; \
+    apk add --virtual .phpmyadmin-phpexts-rundeps $runDeps; \
+    apk del --no-network .build-deps
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -68,8 +66,8 @@ RUN set -ex; \
     } > $PHP_INI_DIR/conf.d/phpmyadmin-misc.ini
 
 # Calculate download URL
-ENV VERSION %%VERSION%%
-ENV SHA256 %%SHA256%%
+ENV VERSION 5.1.3
+ENV SHA256 c562feddc0f8ff5e69629113f273a0d024a65fb928c48e89ce614744d478296f
 ENV URL https://files.phpmyadmin.net/phpMyAdmin/${VERSION}/phpMyAdmin-${VERSION}-all-languages.tar.xz
 
 LABEL org.opencontainers.image.title="Official phpMyAdmin Docker image" \
@@ -84,13 +82,8 @@ LABEL org.opencontainers.image.title="Official phpMyAdmin Docker image" \
 
 # Download tarball, verify it using gpg and extract
 RUN set -ex; \
-    \
-    savedAptMark="$(apt-mark showmanual)"; \
-    \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
+    apk add --no-cache --virtual .fetch-deps \
         gnupg \
-        dirmngr \
     ; \
     \
     export GNUPGHOME="$(mktemp -d)"; \
@@ -110,21 +103,16 @@ RUN set -ex; \
     rm -r "$GNUPGHOME" phpMyAdmin.tar.xz phpMyAdmin.tar.xz.asc; \
     rm -r -v /var/www/html/setup/ /var/www/html/examples/ /var/www/html/js/src/ /var/www/html/templates/test/ /var/www/html/babel.config.json /var/www/html/doc/html/_sources/ /var/www/html/RELEASE-DATE-$VERSION /var/www/html/CONTRIBUTING.md; \
     sed -i "s@define('CONFIG_DIR'.*@define('CONFIG_DIR', '/etc/phpmyadmin/');@" /var/www/html/libraries/vendor_config.php; \
-    \
-    apt-mark auto '.*' > /dev/null; \
-    apt-mark manual $savedAptMark; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    rm -rf /var/lib/apt/lists/*
+    apk del --no-network .fetch-deps
 
 # Copy configuration
 COPY config.inc.php /etc/phpmyadmin/config.inc.php
 
 # Copy main script
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN  apt -y  update && apt -y install default-mysql-client
-COPY data.sql data.sql
+
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
-CMD ["%%CMD%%"]
+CMD ["php-fpm"]
 
 #FROM phpmyadmin:latest
 
