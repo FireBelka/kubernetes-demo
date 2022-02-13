@@ -1,4 +1,4 @@
-FROM phpmyadmin:latest
+FROM phpmyadmin:fpm
 COPY  docker-entrypoint.sh /docker-entrypoint.sh
 #COPY  config.inc.php /etc/phpmyadmin/config.inc.php
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
