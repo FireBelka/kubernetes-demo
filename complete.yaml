@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: testregk8s.azurecr.io/mysql-server
+        image: smth.azurecr.io/mysql-server
         ports:
         - containerPort: 3306
         env:
@@ -112,7 +112,7 @@ spec:
     spec:
       containers:
       - name: phpmyadmin
-        image: testregk8s.azurecr.io/demo
+        image: smth.azurecr.io/demo
         ports:
         - containerPort: 8081
         env:
@@ -172,7 +172,7 @@ spec:
     spec:
       containers:
       - name: phpmyadmin-satging
-        image: testregk8s.azurecr.io/demo
+        image: smth.azurecr.io/demo
         ports:
         - containerPort: 8081
         env:

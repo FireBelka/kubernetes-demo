@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: phpmyadmin-satging
-        image: testregk8s.azurecr.io/demo
+        image: smth.azurecr.io/demo
         ports:
         - containerPort: 8081
         env:
