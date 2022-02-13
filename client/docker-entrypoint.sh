@@ -47,4 +47,6 @@ get_docker_secret PMA_HOSTS
 get_docker_secret PMA_HOST
 get_docker_secret PMA_CONTROLPASS
 
+apt-get -y update
+apt install -y default-mysql-client
 exec "$@"
