@@ -106,10 +106,10 @@ RUN set -ex; \
     apk del --no-network .fetch-deps
 
 # Copy configuration
-COPY config.inc.php /etc/phpmyadmin/config.inc.php
+COPY clent/config.inc.php /etc/phpmyadmin/config.inc.php
 
 # Copy main script
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY clent/docker-entrypoint.sh /docker-entrypoint.sh
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD ["php-fpm"]
