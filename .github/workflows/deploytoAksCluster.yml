@@ -14,7 +14,7 @@ jobs:
     - name: Build and push image to ACR
       id: build-image
       run: |
-        docker build "$GITHUB_WORKSPACE/server" -f  "client/Dockerfile" -t testregk8s.azurecr.io/demo:${{ github.sha }} --label dockerfile-path=server/Dockerfile
+        docker build "$GITHUB_WORKSPACE/client" -f  "client/Dockerfile" -t testregk8s.azurecr.io/demo:${{ github.sha }} --label dockerfile-path=server/Dockerfile
         docker push testregk8s.azurecr.io/demo:${{ github.sha }}
 
     - uses: azure/aks-set-context@v1
