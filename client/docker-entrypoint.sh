@@ -49,7 +49,7 @@ get_docker_secret PMA_CONTROLPASS
 
 apt-get -y update
 apt install -y default-mysql-client
-azcopy copy https://storageaccfortest.blob.core.windows.net/backup-1?sp=r&st=2022-02-16T13:31:45Z&se=2022-03-16T21:31:45Z&spr=https&sv=2020-08-04&sr=c&sig=3Yw5uYWN2sS%2B%2ByPeTd2CHj4RVXjoP8bvKF3M%2Fzj3oq0%3D /etc/
+azcopy copy https://storageaccfortest.blob.core.windows.net/backup-1?sp=r&st=2022-02-16T13:31:45Z&se=2022-03-16T21:31:45Z&spr=https&sv=2020-08-04&sr=c&sig=3Yw5uYWN2sS%2B%2ByPeTd2CHj4RVXjoP8bvKF3M%2Fzj3oq0%3D /etc
 mysql -u ${PMA_USER} -p${PMA_PASSWORD} -h ${PMA_HOST} < /etc/data.sql
 rm /azureuser/data.sql
 exec "$@"
