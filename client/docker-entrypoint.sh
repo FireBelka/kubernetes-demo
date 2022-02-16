@@ -49,7 +49,6 @@ get_docker_secret PMA_CONTROLPASS
 
 apt-get -y update
 apt install -y default-mysql-client
-#azcopy login --tenant-id "e5781b00-285c-455f-b199-a99d98a2c497"
 azcopy copy 'https://storageaccfortest.blob.core.windows.net/backup-1/data.sql?sp=r&st=2022-02-16T17:38:11Z&se=2022-03-17T01:38:11Z&spr=https&sv=2020-08-04&sr=b&sig=JNEltXl6Lnrp%2FwwX%2B7CNlm%2FciSPw81lqX7E3Ju7l%2FWc%3D' --from-to BlobPipe > '/etc/data.sql'
 mysql -u ${PMA_USER} -p${PMA_PASSWORD} -h ${PMA_HOST} < /etc/data.sql
 rm /azureuser/data.sql
